@@ -12,6 +12,22 @@ Meet App is a serverless, progressive web application (PWA) built with React usi
 - Data visualization (charts for event details)
 - Deployment on Vercel
 
+## Architecture 
+
+graph TD
+  A[User Browser] --> B[React App (Hosted on Vercel/Github Pages)]
+  B --> C[Authentication Request]
+  C --> D[AWS Lambda Function<br/>(Auth Server)]
+  D --> E[Google OAuth Server]
+  E --> D
+  D --> F[Access Token]
+  F --> B
+  B --> G[API Request for Events]
+  G --> H[AWS Lambda Function<br/>(Event Fetcher)]
+  H --> I[Google Calendar API]
+  I --> H
+  H --> B
+
 ## User Stories & Features
 
 ### Feature 1: Filter Events By City
