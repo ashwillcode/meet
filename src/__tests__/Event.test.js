@@ -102,4 +102,32 @@ describe('<Event /> component', () => {
     const { container } = render(<Event event={null} />);
     expect(container).toBeEmptyDOMElement();
   });
+
+  test('uses created date when start.dateTime is missing', () => {
+    const eventWithoutStartDateTime = {
+      ...eventProps,
+      created: "2024-01-15T10:00:00Z",
+      start: {}
+    };
+    const { getByTestId } = render(<Event event={eventWithoutStartDateTime} />);
+    const dateElement = getByTestId('event-datetime');
+    expect(dateElement).toBeInTheDocument();
+    expect(dateElement.textContent).toMatch(/January 15, 2024 at 10:00 AM/);
+  });
+
+  test('handles completely missing date information', () => {
+    const eventWithoutDates = {
+      ...eventProps,
+      start: undefined,
+      created: undefined
+    };
+    const { getByTestId } = render(<Event event={eventWithoutDates} />);
+    const dateElement = getByTestId('event-datetime');
+    expect(dateElement).toBeInTheDocument();
+    // Should use current date as fallback
+    const today = new Date();
+    const month = today.toLocaleString('default', { month: 'long' });
+    const year = today.getFullYear();
+    expect(dateElement.textContent).toMatch(new RegExp(`${month}.*${year}`));
+  });
 }); 

@@ -65,4 +65,30 @@ describe('<NumberOfEvents /> component', () => {
     // onNumberChange should not be called with invalid number
     expect(onNumberChange).not.toHaveBeenCalledWith(-1);
   });
+
+  test('shows error for invalid number input', async () => {
+    const user = userEvent.setup();
+    render(<NumberOfEvents />);
+    const input = screen.getByRole('spinbutton');
+
+    // Test with zero (invalid number)
+    await act(async () => {
+      await user.clear(input);
+      await user.type(input, '0');
+    });
+
+    expect(screen.getByText('Number must be greater than 0')).toBeInTheDocument();
+  });
+
+  test('shows error for empty input', async () => {
+    const user = userEvent.setup();
+    render(<NumberOfEvents />);
+    const input = screen.getByRole('spinbutton');
+
+    await act(async () => {
+      await user.clear(input);
+    });
+
+    expect(screen.getByText('Number is required')).toBeInTheDocument();
+  });
 }); 
