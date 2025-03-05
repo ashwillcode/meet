@@ -1,4 +1,4 @@
-import { render } from '@testing-library/react';
+import { render, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import CitySearch from '../components/CitySearch';
 import React from 'react';
@@ -15,7 +15,9 @@ describe('<CitySearch /> component', () => {
     const user = userEvent.setup();
     const cityTextBox = queryByRole('textbox');
     
-    await user.click(cityTextBox);
+    await act(async () => {
+      await user.click(cityTextBox);
+    });
     
     const suggestionList = queryByRole('list');
     expect(suggestionList).toBeInTheDocument();
