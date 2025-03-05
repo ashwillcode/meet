@@ -15,44 +15,49 @@ describe('<Event /> component', () => {
   });
 
   test('renders event details correctly', () => {
-    const { getByText } = render(<Event event={eventProps} />);
+    const { getByTestId } = render(<Event event={eventProps} />);
     
-    expect(getByText('Sample Event')).toBeInTheDocument();
-    expect(getByText('2024-01-01T12:00:00Z')).toBeInTheDocument();
-    expect(getByText('Berlin, Germany')).toBeInTheDocument();
+    expect(getByTestId('event-title')).toHaveTextContent('Sample Event');
+    expect(getByTestId('event-datetime')).toHaveTextContent('January 1, 2024');
+    expect(getByTestId('event-location')).toHaveTextContent('Berlin, Germany');
   });
 
   test('renders show details button', () => {
-    const { getByText } = render(<Event event={eventProps} />);
-    expect(getByText('Show Details')).toBeInTheDocument();
+    const { getByTestId } = render(<Event event={eventProps} />);
+    const button = getByTestId('details-btn');
+    expect(button).toBeInTheDocument();
+    expect(button).toHaveTextContent('Show Details');
+    expect(button).toHaveAttribute('aria-expanded', 'false');
   });
 
   test('shows details when show details button is clicked', async () => {
-    const { getByText, queryByText } = render(<Event event={eventProps} />);
+    const { getByTestId, queryByTestId } = render(<Event event={eventProps} />);
     const user = userEvent.setup();
     
-    // Initially, description should not be visible
-    expect(queryByText('This is a sample event description')).not.toBeInTheDocument();
+    // Initially, details should not be visible
+    expect(queryByTestId('event-details')).not.toBeInTheDocument();
     
     // Click show details button
-    await user.click(getByText('Show Details'));
+    await user.click(getByTestId('details-btn'));
     
-    // Description should now be visible
-    expect(getByText('This is a sample event description')).toBeInTheDocument();
-    expect(getByText('Hide Details')).toBeInTheDocument();
+    // Details should now be visible
+    expect(getByTestId('event-details')).toBeInTheDocument();
+    expect(getByTestId('details-btn')).toHaveTextContent('Hide Details');
+    expect(getByTestId('details-btn')).toHaveAttribute('aria-expanded', 'true');
   });
 
   test('hides details when hide details button is clicked', async () => {
-    const { getByText, queryByText } = render(<Event event={eventProps} />);
+    const { getByTestId, queryByTestId } = render(<Event event={eventProps} />);
     const user = userEvent.setup();
     
     // Show details first
-    await user.click(getByText('Show Details'));
-    expect(getByText('This is a sample event description')).toBeInTheDocument();
+    await user.click(getByTestId('details-btn'));
+    expect(getByTestId('event-details')).toBeInTheDocument();
     
     // Hide details
-    await user.click(getByText('Hide Details'));
-    expect(queryByText('This is a sample event description')).not.toBeInTheDocument();
-    expect(getByText('Show Details')).toBeInTheDocument();
+    await user.click(getByTestId('details-btn'));
+    expect(queryByTestId('event-details')).not.toBeInTheDocument();
+    expect(getByTestId('details-btn')).toHaveTextContent('Show Details');
+    expect(getByTestId('details-btn')).toHaveAttribute('aria-expanded', 'false');
   });
 }); 
