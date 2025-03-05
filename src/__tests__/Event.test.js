@@ -7,22 +7,41 @@ describe('<Event /> component', () => {
   let eventProps;
   beforeEach(() => {
     eventProps = {
-      summary: 'Sample Event',
-      created: '2024-01-01T12:00:00Z',
-      location: 'Berlin, Germany',
-      description: 'This is a sample event description'
+      id: "1",
+      summary: "React Meetup",
+      location: "Berlin, Germany",
+      description: "Join us for an evening of React discussions and networking",
+      htmlLink: "https://example.com/event1",
+      start: {
+        dateTime: "2024-06-15T19:00:00Z",
+        timeZone: "UTC"
+      },
+      end: {
+        dateTime: "2024-06-15T22:00:00Z",
+        timeZone: "UTC"
+      }
     };
   });
 
-  test('renders event details correctly', () => {
+  test('renders event title in collapsed view', () => {
     const { getByTestId } = render(<Event event={eventProps} />);
-    
-    expect(getByTestId('event-title')).toHaveTextContent('Sample Event');
-    expect(getByTestId('event-datetime')).toHaveTextContent('January 1, 2024');
+    expect(getByTestId('event-title')).toHaveTextContent('React Meetup');
+  });
+
+  test('renders event start time in collapsed view', () => {
+    const { getByTestId } = render(<Event event={eventProps} />);
+    const dateElement = getByTestId('event-datetime');
+    expect(dateElement).toBeInTheDocument();
+    // Should show date and time in a readable format
+    expect(dateElement.textContent).toMatch(/June 15, 2024 at 07:00 PM/);
+  });
+
+  test('renders event location in collapsed view', () => {
+    const { getByTestId } = render(<Event event={eventProps} />);
     expect(getByTestId('event-location')).toHaveTextContent('Berlin, Germany');
   });
 
-  test('renders show details button', () => {
+  test('renders show details button with correct initial state', () => {
     const { getByTestId } = render(<Event event={eventProps} />);
     const button = getByTestId('details-btn');
     expect(button).toBeInTheDocument();
@@ -43,7 +62,9 @@ describe('<Event /> component', () => {
     });
     
     // Details should now be visible
-    expect(getByTestId('event-details')).toBeInTheDocument();
+    const details = getByTestId('event-details');
+    expect(details).toBeInTheDocument();
+    expect(details).toHaveTextContent('Join us for an evening of React discussions and networking');
     expect(getByTestId('details-btn')).toHaveTextContent('Hide Details');
     expect(getByTestId('details-btn')).toHaveAttribute('aria-expanded', 'true');
   });
@@ -65,5 +86,20 @@ describe('<Event /> component', () => {
     expect(queryByTestId('event-details')).not.toBeInTheDocument();
     expect(getByTestId('details-btn')).toHaveTextContent('Show Details');
     expect(getByTestId('details-btn')).toHaveAttribute('aria-expanded', 'false');
+  });
+
+  test('handles missing event data gracefully', () => {
+    const incompleteEvent = {
+      summary: "Incomplete Event"
+      // Missing other required fields
+    };
+    
+    // Component should not throw error when rendering incomplete data
+    expect(() => render(<Event event={incompleteEvent} />)).not.toThrow();
+  });
+
+  test('handles null event prop gracefully', () => {
+    const { container } = render(<Event event={null} />);
+    expect(container).toBeEmptyDOMElement();
   });
 }); 
