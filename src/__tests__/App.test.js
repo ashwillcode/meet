@@ -12,4 +12,9 @@ describe('<App /> component', () => {
     const AppDOM = render(<App />).container.firstChild;
     expect(AppDOM.querySelector('#city-search')).toBeInTheDocument();
   });
+
+  test('renders NumberOfEvents', () => {
+    const AppDOM = render(<App />).container.firstChild;
+    expect(AppDOM.querySelector('.number-of-events')).toBeInTheDocument();
+  });
 }); 
