@@ -1,20 +1,58 @@
 import React, { useState } from 'react';
+import { getEvents, extractLocations } from '../api';
 
-const CitySearch = () => {
+const CitySearch = ({ setCurrentCity }) => {
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [query, setQuery] = useState("");
+  const [suggestions, setSuggestions] = useState([]);
+
+  const handleInputChanged = async (event) => {
+    const value = event.target.value;
+    setQuery(value);
+    
+    if (value) {
+      const events = await getEvents();
+      const cities = extractLocations(events);
+      const filteredCities = cities.filter(city =>
+        city.toLowerCase().includes(value.toLowerCase())
+      );
+      setSuggestions(filteredCities);
+    } else {
+      setSuggestions([]);
+    }
+  };
+
+  const handleItemClicked = (city) => {
+    setQuery(city);
+    setShowSuggestions(false);
+    setCurrentCity(city);
+  };
 
   return (
     <div id="city-search">
       <input
         type="text"
         placeholder="Search for a city"
+        value={query}
+        onChange={handleInputChanged}
         onFocus={() => setShowSuggestions(true)}
       />
       {showSuggestions && (
         <ul className="suggestions">
-          <li>Suggestion 1</li>
-          <li>Suggestion 2</li>
-          <li>Suggestion 3</li>
+          {suggestions.length > 0 ? (
+            <>
+              {suggestions.map((city) => (
+                <li key={city} onClick={() => handleItemClicked(city)}>
+                  {city}
+                </li>
+              ))}
+              <li key="all" onClick={() => handleItemClicked("See all cities")}>
+                <b>See all cities</b>
+              </li>
+            </>
+          ) : (
+            <li>No cities found</li>
+          )}
         </ul>
       )}
     </div>

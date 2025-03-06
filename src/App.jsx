@@ -7,19 +7,25 @@ import './App.css'
 
 const App = () => {
   const [events, setEvents] = useState([])
+  const [currentCity, setCurrentCity] = useState("See all cities")
   const [numberOfEvents, setNumberOfEvents] = useState(32)
+  const [allEvents, setAllEvents] = useState([])
 
   useEffect(() => {
     const fetchEvents = async () => {
       const events = await getEvents()
-      setEvents(events)
+      setAllEvents(events)
+      setEvents(currentCity === "See all cities" 
+        ? events 
+        : events.filter(event => event.location === currentCity)
+      )
     }
     fetchEvents()
-  }, [])
+  }, [currentCity])
 
   return (
     <div className="App">
-      <CitySearch />
+      <CitySearch setCurrentCity={setCurrentCity} />
       <NumberOfEvents 
         numberOfEvents={numberOfEvents}
         onNumberChange={setNumberOfEvents}
