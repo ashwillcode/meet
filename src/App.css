@@ -1,42 +1,210 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+/* Modern Google Font Import */
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap');
+
+/* Color Scheme and Variables */
+:root {
+  --terracotta: #E07A5F;
+  --terracotta-light: #F2A696;
+  --lavender: #9381FF;
+  --lavender-light: #B8B8FF;
+  --background: #FDFCFA;
+  --surface: #FFFFFF;
+  --text-primary: #2C3E50;
+  --text-secondary: #6B7280;
+  --border: #E2E8F0;
+  --shadow: rgba(0, 0, 0, 0.05);
+}
+
+/* Reset Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background-color: var(--background);
+  color: var(--text-primary);
+  line-height: 1.5;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+}
+
+/* List Reset */
+ul, li {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Main App Container */
+.App {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 20px;
+  max-width: 1200px;
+}
+
+/* Search Section */
+#city-search {
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+/* Input Styling */
+input[type="text"],
+input[type="number"] {
+  width: 100%;
+  padding: 16px 20px;
+  font-size: 16px;
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  background-color: var(--surface);
+  color: var(--text-primary);
+  transition: all 0.3s ease;
   text-align: center;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+input[type="text"]:focus,
+input[type="number"]:focus {
+  outline: none;
+  border-color: var(--lavender);
+  box-shadow: 0 0 0 3px var(--lavender-light);
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
+/* Suggestions Dropdown */
+.suggestions {
+  width: 100%;
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  margin-top: 8px;
+  box-shadow: 0 4px 12px var(--shadow);
+  position: absolute;
+  top: 100%;
+  z-index: 10;
+  overflow: hidden;
+}
+
+.suggestions > li {
+  padding: 12px 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: var(--text-primary);
+  text-align: left;
+}
+
+.suggestions > li:not(:last-child) {
+  border-bottom: 1px solid var(--border);
+}
+
+.suggestions > li:hover {
+  background-color: var(--lavender-light);
+  color: var(--lavender);
+}
+
+/* Number of Events Section */
+.number-of-events {
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto 40px;
+  text-align: center;
+}
+
+/* Event List Container */
+#event-list {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 24px;
+  padding: 20px;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+/* Event Cards */
+.event {
+  background-color: var(--surface);
+  border-radius: 16px;
+  padding: 24px;
+  border: 1px solid var(--border);
+  box-shadow: 0 2px 8px var(--shadow);
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.event:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px var(--shadow);
+}
+
+.event h2 {
+  width: 100%;
+  text-align: center;
+  color: var(--text-primary);
+  margin-bottom: 16px;
+  font-size: 1.25rem;
+}
+
+.event p {
+  width: 100%;
+  text-align: center;
+  color: var(--text-secondary);
+  margin-bottom: 16px;
+  flex-grow: 1;
+}
+
+/* Button Styling */
+.details-btn {
+  background-color: var(--terracotta);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  align-self: center;
+  margin-top: auto;
+}
+
+.details-btn:hover {
+  background-color: var(--terracotta-light);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .App {
+    padding: 20px 16px;
   }
-  to {
-    transform: rotate(360deg);
+
+  #event-list {
+    grid-template-columns: 1fr;
+    padding: 10px;
+  }
+
+  input[type="text"],
+  input[type="number"] {
+    font-size: 16px; /* Prevents zoom on mobile */
   }
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
   }
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
 }
