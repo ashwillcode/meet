@@ -9,10 +9,9 @@ describe('Show/Hide Event Details Feature', () => {
 
   beforeAll(async () => {
     try {
-      // Launch browser with more stable configuration
+      // Launch browser with headless mode for better performance
       browser = await puppeteer.launch({
-        headless: false,
-        slowMo: 250,
+        headless: true, // Changed to true for better performance
         args: [
           '--no-sandbox',
           '--disable-setuid-sandbox',
