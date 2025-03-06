@@ -80,37 +80,87 @@ describe('<App /> component', () => {
     });
   });
 
-  test('renders the correct number of events', async () => {
-    const user = userEvent.setup();
-    let renderResult;
-    
-    await act(async () => {
-      renderResult = render(<App />);
+  describe('Integration tests', () => {
+    test('number of events integration - default value and user input', async () => {
+      const user = userEvent.setup();
+      let renderResult;
+      
+      // Given the user has just opened the app
+      await act(async () => {
+        renderResult = render(<App />);
+      });
+
+      // Wait for initial events to load with default value (32)
+      const eventListDOM = renderResult.container.querySelector('#event-list');
+      const numberOfEventsInput = renderResult.container.querySelector('#number-of-events-input');
+      
+      // Verify initial state
+      expect(numberOfEventsInput).toBeInTheDocument();
+      expect(numberOfEventsInput).toHaveValue(32); // Default value
+      
+      await waitFor(() => {
+        const eventItems = within(eventListDOM).queryAllByTestId('event-item');
+        expect(eventItems.length).toBe(3); // Our mock data has 3 events
+      });
+
+      // When the user changes the value of the "number of events" input field
+      await act(async () => {
+        await user.type(numberOfEventsInput, '{backspace}{backspace}2');
+      });
+
+      // Then the number of events in the list will change accordingly
+      await waitFor(() => {
+        const eventItems = within(eventListDOM).queryAllByTestId('event-item');
+        expect(eventItems).toHaveLength(2);
+      });
+
+      // Test changing to a number larger than available events
+      await act(async () => {
+        await user.clear(numberOfEventsInput);
+        await user.type(numberOfEventsInput, '10');
+      });
+
+      // Should show all available events when requested number is larger
+      await waitFor(() => {
+        const eventItems = within(eventListDOM).queryAllByTestId('event-item');
+        expect(eventItems).toHaveLength(3); // All available events
+      });
     });
 
-    // Wait for initial events to load
-    const eventListDOM = renderResult.container.querySelector('#event-list');
-    await waitFor(() => {
-      const eventItems = within(eventListDOM).queryAllByTestId('event-item');
-      expect(eventItems.length).toBe(3); // Initially shows all 3 events
-    });
+    test('city filtering integration - events for selected city', async () => {
+      const user = userEvent.setup();
+      let renderResult;
+      
+      await act(async () => {
+        renderResult = render(<App />);
+      });
 
-    // Find and update the number of events input
-    const numberOfEventsInput = renderResult.container.querySelector('#number-of-events-input');
-    expect(numberOfEventsInput).toBeInTheDocument();
+      const citySearchDOM = renderResult.container.querySelector('#city-search');
+      const cityInput = within(citySearchDOM).queryByRole('textbox');
 
-    // Clear the input and type new value
-    await act(async () => {
-      await user.clear(numberOfEventsInput);
-      await user.type(numberOfEventsInput, "2");
-    });
+      await act(async () => {
+        await user.type(cityInput, 'Berlin');
+      });
 
-    // Wait for the events list to update with the new number of events
-    await waitFor(() => {
-      const eventItems = within(eventListDOM).queryAllByTestId('event-item');
-      expect(eventItems).toHaveLength(2); // Should now show only 2 events
-    }, {
-      timeout: 3000
+      let berlinSuggestion;
+      await waitFor(() => {
+        berlinSuggestion = within(citySearchDOM).queryByText('Berlin, Germany');
+        expect(berlinSuggestion).toBeInTheDocument();
+      });
+
+      await act(async () => {
+        await user.click(berlinSuggestion);
+      });
+
+      const eventListDOM = renderResult.container.querySelector('#event-list');
+      await waitFor(() => {
+        const eventItems = within(eventListDOM).queryAllByTestId('event-item');
+        const berlinEvents = eventItems.filter(event => 
+          within(event).getByTestId('event-location').textContent === 'Berlin, Germany'
+        );
+        expect(berlinEvents.length).toBeGreaterThan(0);
+        expect(berlinEvents.length).toBe(eventItems.length);
+      });
     });
   });
 }); 

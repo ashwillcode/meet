@@ -36,12 +36,16 @@ const App = () => {
     filterEvents()
   }, [filterEvents])
 
+  const handleNumberOfEvents = (value) => {
+    setNumberOfEvents(value)
+  }
+
   return (
     <div className="App">
       <CitySearch setCurrentCity={setCurrentCity} />
       <NumberOfEvents 
         numberOfEvents={numberOfEvents}
-        onNumberChange={setNumberOfEvents}
+        onNumberChange={handleNumberOfEvents}
       />
       <EventList events={events} />
     </div>
