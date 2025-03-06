@@ -1,4 +1,4 @@
-import { render, within, waitFor } from '@testing-library/react';
+import { render, within, waitFor, act } from '@testing-library/react';
 import React from 'react';
 import App from '../App';
 import { getEvents } from '../api';
@@ -20,7 +20,12 @@ describe('<App /> component', () => {
   });
 
   test('renders list of events when app is mounted', async () => {
-    const { container } = render(<App />);
+    let container;
+    await act(async () => {
+      const renderResult = render(<App />);
+      container = renderResult.container;
+    });
+
     const eventListDOM = container.querySelector('#event-list');
     expect(eventListDOM).toBeInTheDocument();
 
