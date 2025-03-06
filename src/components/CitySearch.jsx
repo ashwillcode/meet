@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { getEvents, extractLocations } from '../api';
 
 const CitySearch = ({ setCurrentCity }) => {
@@ -6,10 +6,7 @@ const CitySearch = ({ setCurrentCity }) => {
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
 
-  const handleInputChanged = async (event) => {
-    const value = event.target.value;
-    setQuery(value);
-    
+  const updateSuggestions = useCallback(async (value) => {
     if (value) {
       const events = await getEvents();
       const cities = extractLocations(events);
@@ -20,13 +17,19 @@ const CitySearch = ({ setCurrentCity }) => {
     } else {
       setSuggestions([]);
     }
-  };
+  }, []);
 
-  const handleItemClicked = (city) => {
+  const handleInputChanged = useCallback(async (event) => {
+    const value = event.target.value;
+    setQuery(value);
+    await updateSuggestions(value);
+  }, [updateSuggestions]);
+
+  const handleItemClicked = useCallback((city) => {
     setQuery(city);
     setShowSuggestions(false);
     setCurrentCity(city);
-  };
+  }, [setCurrentCity]);
 
   return (
     <div id="city-search">

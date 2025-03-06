@@ -5,29 +5,37 @@ import App from '../App';
 import { getEvents } from '../api';
 
 describe('<App /> component', () => {
-  test('renders list of events', () => {
-    const AppDOM = render(<App />).container.firstChild;
-    expect(AppDOM.querySelector('#event-list')).toBeInTheDocument();
+  test('renders list of events', async () => {
+    let renderResult;
+    await act(async () => {
+      renderResult = render(<App />);
+    });
+    expect(renderResult.container.querySelector('#event-list')).toBeInTheDocument();
   });
 
-  test('renders CitySearch', () => {
-    const AppDOM = render(<App />).container.firstChild;
-    expect(AppDOM.querySelector('#city-search')).toBeInTheDocument();
+  test('renders CitySearch', async () => {
+    let renderResult;
+    await act(async () => {
+      renderResult = render(<App />);
+    });
+    expect(renderResult.container.querySelector('#city-search')).toBeInTheDocument();
   });
 
-  test('renders NumberOfEvents', () => {
-    const AppDOM = render(<App />).container.firstChild;
-    expect(AppDOM.querySelector('.number-of-events')).toBeInTheDocument();
+  test('renders NumberOfEvents', async () => {
+    let renderResult;
+    await act(async () => {
+      renderResult = render(<App />);
+    });
+    expect(renderResult.container.querySelector('.number-of-events')).toBeInTheDocument();
   });
 
   test('renders list of events when app is mounted', async () => {
-    let container;
+    let renderResult;
     await act(async () => {
-      const renderResult = render(<App />);
-      container = renderResult.container;
+      renderResult = render(<App />);
     });
 
-    const eventListDOM = container.querySelector('#event-list');
+    const eventListDOM = renderResult.container.querySelector('#event-list');
     expect(eventListDOM).toBeInTheDocument();
 
     await waitFor(() => {
@@ -38,31 +46,30 @@ describe('<App /> component', () => {
 
   test('renders events for the selected city', async () => {
     const user = userEvent.setup();
-    let container;
+    let renderResult;
     
     await act(async () => {
-      const renderResult = render(<App />);
-      container = renderResult.container;
+      renderResult = render(<App />);
     });
 
-    const citySearchDOM = container.querySelector('#city-search');
+    const citySearchDOM = renderResult.container.querySelector('#city-search');
     const cityInput = within(citySearchDOM).queryByRole('textbox');
 
     await act(async () => {
       await user.type(cityInput, 'Berlin');
     });
 
+    let berlinSuggestion;
     await waitFor(() => {
-      const berlinSuggestion = within(citySearchDOM).queryByText('Berlin, Germany');
+      berlinSuggestion = within(citySearchDOM).queryByText('Berlin, Germany');
       expect(berlinSuggestion).toBeInTheDocument();
     });
 
     await act(async () => {
-      const berlinSuggestion = within(citySearchDOM).getByText('Berlin, Germany');
       await user.click(berlinSuggestion);
     });
 
-    const eventListDOM = container.querySelector('#event-list');
+    const eventListDOM = renderResult.container.querySelector('#event-list');
     await waitFor(() => {
       const eventItems = within(eventListDOM).queryAllByTestId('event-item');
       const berlinEvents = eventItems.filter(event => 

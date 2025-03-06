@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import CitySearch from './components/CitySearch'
 import EventList from './components/EventList'
 import NumberOfEvents from './components/NumberOfEvents'
@@ -11,17 +11,30 @@ const App = () => {
   const [numberOfEvents, setNumberOfEvents] = useState(32)
   const [allEvents, setAllEvents] = useState([])
 
+  const fetchInitialEvents = useCallback(async () => {
+    const fetchedEvents = await getEvents()
+    setAllEvents(fetchedEvents)
+  }, [])
+
+  const filterEvents = useCallback(() => {
+    let filteredEvents = currentCity === "See all cities"
+      ? [...allEvents]
+      : allEvents.filter(event => event.location === currentCity)
+    
+    // Apply numberOfEvents limit
+    filteredEvents = filteredEvents.slice(0, numberOfEvents)
+    setEvents(filteredEvents)
+  }, [currentCity, allEvents, numberOfEvents])
+
+  // Fetch events on mount
   useEffect(() => {
-    const fetchEvents = async () => {
-      const events = await getEvents()
-      setAllEvents(events)
-      setEvents(currentCity === "See all cities" 
-        ? events 
-        : events.filter(event => event.location === currentCity)
-      )
-    }
-    fetchEvents()
-  }, [currentCity])
+    fetchInitialEvents()
+  }, [fetchInitialEvents])
+
+  // Filter events when dependencies change
+  useEffect(() => {
+    filterEvents()
+  }, [filterEvents])
 
   return (
     <div className="App">
