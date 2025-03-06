@@ -1,3 +1,4 @@
+/* eslint-disable jest/expect-expect */
 import { render, within, waitFor, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { defineFeature, loadFeature } from 'jest-cucumber';
