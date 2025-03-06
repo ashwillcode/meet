@@ -39,7 +39,7 @@ describe('<App /> component', () => {
     expect(eventListDOM).toBeInTheDocument();
 
     await waitFor(() => {
-      const eventItems = within(eventListDOM).queryAllByRole('listitem');
+      const eventItems = within(eventListDOM).queryAllByTestId('event-item');
       expect(eventItems.length).toBeGreaterThan(0);
     });
   });
@@ -77,6 +77,40 @@ describe('<App /> component', () => {
       );
       expect(berlinEvents.length).toBeGreaterThan(0);
       expect(berlinEvents.length).toBe(eventItems.length);
+    });
+  });
+
+  test('renders the correct number of events', async () => {
+    const user = userEvent.setup();
+    let renderResult;
+    
+    await act(async () => {
+      renderResult = render(<App />);
+    });
+
+    // Wait for initial events to load
+    const eventListDOM = renderResult.container.querySelector('#event-list');
+    await waitFor(() => {
+      const eventItems = within(eventListDOM).queryAllByTestId('event-item');
+      expect(eventItems.length).toBe(3); // Initially shows all 3 events
+    });
+
+    // Find and update the number of events input
+    const numberOfEventsInput = renderResult.container.querySelector('#number-of-events-input');
+    expect(numberOfEventsInput).toBeInTheDocument();
+
+    // Clear the input and type new value
+    await act(async () => {
+      await user.clear(numberOfEventsInput);
+      await user.type(numberOfEventsInput, "2");
+    });
+
+    // Wait for the events list to update with the new number of events
+    await waitFor(() => {
+      const eventItems = within(eventListDOM).queryAllByTestId('event-item');
+      expect(eventItems).toHaveLength(2); // Should now show only 2 events
+    }, {
+      timeout: 3000
     });
   });
 }); 
