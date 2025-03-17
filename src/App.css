@@ -208,3 +208,42 @@ input[type="number"]:focus {
     transition: none !important;
   }
 }
+
+.alerts-container {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  width: 100%;
+  max-width: 520px;
+  padding: 10px;
+}
+
+.Alert {
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.Alert p {
+  margin: 0;
+  padding: 8px 16px;
+  border-radius: 4px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  transition: opacity 0.3s ease;
+}
+
+.city-search-input {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+  width: 200px;
+  margin-bottom: 10px;
+}
+
+.city-search-input:focus {
+  outline: none;
+  border-color: #2196F3;
+  box-shadow: 0 0 0 2px rgba(33,150,243,0.1);
+}

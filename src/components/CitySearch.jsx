@@ -1,23 +1,35 @@
 import React, { useState, useCallback } from 'react';
 import { getEvents, extractLocations } from '../api';
 
-const CitySearch = ({ setCurrentCity }) => {
+const CitySearch = ({ setCurrentCity, setInfoAlert, setErrorAlert }) => {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
 
   const updateSuggestions = useCallback(async (value) => {
-    if (value) {
-      const events = await getEvents();
-      const cities = extractLocations(events);
-      const filteredCities = cities.filter(city =>
-        city.toLowerCase().includes(value.toLowerCase())
-      );
-      setSuggestions(filteredCities);
-    } else {
-      setSuggestions([]);
+    try {
+      if (value) {
+        const events = await getEvents();
+        const cities = extractLocations(events);
+        const filteredCities = cities.filter(city =>
+          city.toLowerCase().includes(value.toLowerCase())
+        );
+        setSuggestions(filteredCities);
+        
+        if (filteredCities.length === 0) {
+          setInfoAlert('No cities match your search. Please try another city.');
+        } else {
+          setInfoAlert('');
+        }
+      } else {
+        setSuggestions([]);
+        setInfoAlert('');
+      }
+      setErrorAlert('');
+    } catch (error) {
+      setErrorAlert('Error fetching city data. Please try again later.');
     }
-  }, []);
+  }, [setInfoAlert, setErrorAlert]);
 
   const handleInputChanged = useCallback(async (event) => {
     const value = event.target.value;
@@ -29,7 +41,9 @@ const CitySearch = ({ setCurrentCity }) => {
     setQuery(city);
     setShowSuggestions(false);
     setCurrentCity(city);
-  }, [setCurrentCity]);
+    setInfoAlert('');
+    setErrorAlert('');
+  }, [setCurrentCity, setInfoAlert, setErrorAlert]);
 
   return (
     <div id="city-search">
@@ -39,6 +53,7 @@ const CitySearch = ({ setCurrentCity }) => {
         value={query}
         onChange={handleInputChanged}
         onFocus={() => setShowSuggestions(true)}
+        className="city-search-input"
       />
       {showSuggestions && (
         <ul className="suggestions">

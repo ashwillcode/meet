@@ -10,6 +10,9 @@ const App = () => {
   const [currentCity, setCurrentCity] = useState("See all cities")
   const [numberOfEvents, setNumberOfEvents] = useState(32)
   const [allEvents, setAllEvents] = useState([])
+  const [infoAlert, setInfoAlert] = useState("")
+  const [errorAlert, setErrorAlert] = useState("")
+  const [warningAlert, setWarningAlert] = useState("")
 
   const fetchInitialEvents = useCallback(async () => {
     const fetchedEvents = await getEvents()
@@ -42,10 +45,20 @@ const App = () => {
 
   return (
     <div className="App">
-      <CitySearch setCurrentCity={setCurrentCity} />
+      <div className="alerts-container">
+        {infoAlert && <InfoAlert text={infoAlert} />}
+        {errorAlert && <ErrorAlert text={errorAlert} />}
+        {warningAlert && <WarningAlert text={warningAlert} />}
+      </div>
+      <CitySearch 
+        setCurrentCity={setCurrentCity}
+        setInfoAlert={setInfoAlert}
+        setErrorAlert={setErrorAlert}
+      />
       <NumberOfEvents 
         numberOfEvents={numberOfEvents}
         onNumberChange={handleNumberOfEvents}
+        setWarningAlert={setWarningAlert}
       />
       <EventList events={events} />
     </div>
