@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
 
-const NumberOfEvents = ({ numberOfEvents = 32, onNumberChange }) => {
+const NumberOfEvents = ({ numberOfEvents = 32, onNumberChange, setErrorAlert }) => {
   const [number, setNumber] = useState(numberOfEvents.toString());
   const [error, setError] = useState('');
 
@@ -12,21 +12,25 @@ const NumberOfEvents = ({ numberOfEvents = 32, onNumberChange }) => {
     // Validate input
     if (value === '') {
       setError('Number is required');
+      setErrorAlert && setErrorAlert('Number is required');
       return;
     }
 
     const parsedValue = parseInt(value, 10);
     if (isNaN(parsedValue)) {
       setError('Please enter a valid number');
+      setErrorAlert && setErrorAlert('Please enter a valid number');
       return;
     }
 
     if (parsedValue <= 0) {
       setError('Number must be greater than 0');
+      setErrorAlert && setErrorAlert('Number must be greater than 0');
       return;
     }
 
     setError('');
+    setErrorAlert && setErrorAlert('');
     onNumberChange && onNumberChange(parsedValue);
   };
 
@@ -65,7 +69,8 @@ const NumberOfEvents = ({ numberOfEvents = 32, onNumberChange }) => {
 
 NumberOfEvents.propTypes = {
   numberOfEvents: PropTypes.number,
-  onNumberChange: PropTypes.func
+  onNumberChange: PropTypes.func,
+  setErrorAlert: PropTypes.func
 };
 
 export default NumberOfEvents; 
