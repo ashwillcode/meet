@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react'
 import CitySearch from './components/CitySearch'
 import EventList from './components/EventList'
 import NumberOfEvents from './components/NumberOfEvents'
+import { InfoAlert, ErrorAlert, WarningAlert } from './components/Alert'
 import { getEvents } from './api'
 import './App.css'
 
@@ -46,9 +47,24 @@ const App = () => {
   return (
     <div className="App">
       <div className="alerts-container">
-        {infoAlert && <InfoAlert text={infoAlert} />}
-        {errorAlert && <ErrorAlert text={errorAlert} />}
-        {warningAlert && <WarningAlert text={warningAlert} />}
+        {infoAlert && (
+          <InfoAlert 
+            text={infoAlert} 
+            onClose={() => setInfoAlert("")}
+          />
+        )}
+        {errorAlert && (
+          <ErrorAlert 
+            text={errorAlert} 
+            onClose={() => setErrorAlert("")}
+          />
+        )}
+        {warningAlert && (
+          <WarningAlert 
+            text={warningAlert} 
+            onClose={() => setWarningAlert("")}
+          />
+        )}
       </div>
       <CitySearch 
         setCurrentCity={setCurrentCity}

@@ -16,14 +16,48 @@ class Alert extends Component {
       backgroundColor: this.backgroundColor,
       display: 'flex',
       alignItems: 'center',
-      justifyContent: 'center'
+      justifyContent: 'space-between',
+      position: 'relative'
     };
+  }
+
+  getCloseButtonStyle = () => {
+    return {
+      color: this.color,
+      background: 'none',
+      border: 'none',
+      cursor: 'pointer',
+      fontSize: '18px',
+      padding: '0 5px',
+      marginLeft: '10px',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      opacity: '0.7',
+      transition: 'opacity 0.2s ease'
+    };
+  }
+
+  handleClose = () => {
+    const { onClose } = this.props;
+    if (onClose) {
+      onClose();
+    }
   }
 
   render() {
     return (
       <div className="Alert">
-        <p style={this.getStyle()}>{this.props.text}</p>
+        <div style={this.getStyle()}>
+          <span>{this.props.text}</span>
+          <button 
+            onClick={this.handleClose}
+            style={this.getCloseButtonStyle()}
+            aria-label="Close alert"
+          >
+            ×
+          </button>
+        </div>
       </div>
     );
   }
