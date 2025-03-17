@@ -3,7 +3,6 @@ import CitySearch from './components/CitySearch'
 import EventList from './components/EventList'
 import NumberOfEvents from './components/NumberOfEvents'
 import { getEvents } from './api'
-import * as atatus from 'atatus-spa'
 import './App.css'
 
 const App = () => {
@@ -11,17 +10,6 @@ const App = () => {
   const [currentCity, setCurrentCity] = useState("See all cities")
   const [numberOfEvents, setNumberOfEvents] = useState(32)
   const [allEvents, setAllEvents] = useState([])
-
-  // Test Atatus integration in development mode
-  useEffect(() => {
-    if (import.meta.env.DEV) {
-      // Small delay to ensure Atatus is initialized
-      setTimeout(() => {
-        console.log('Testing Atatus error reporting...')
-        atatus.notify(new Error('Test Atatus Setup'))
-      }, 1000)
-    }
-  }, [])
 
   const fetchInitialEvents = useCallback(async () => {
     const fetchedEvents = await getEvents()

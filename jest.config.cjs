@@ -7,4 +7,9 @@ module.exports = {
   transform: {
     '^.+\\.(js|jsx)$': 'babel-jest',
   },
+  extensionsToTreatAsEsm: ['.jsx'],
+  transformIgnorePatterns: [
+    '/node_modules/(?!(atatus-spa|other-es-module)/)'
+  ],
+  testMatch: ['**/__tests__/**/*.[jt]s?(x)', '**/?(*.)+(spec|test).[jt]s?(x)'],
 }; 
