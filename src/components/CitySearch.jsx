@@ -1,10 +1,25 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { getEvents, extractLocations } from '../api';
 
 const CitySearch = ({ setCurrentCity, setInfoAlert, setErrorAlert }) => {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
+  const searchContainerRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (searchContainerRef.current && !searchContainerRef.current.contains(event.target)) {
+        setShowSuggestions(false);
+        setInfoAlert('');
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [setInfoAlert]);
 
   const updateSuggestions = useCallback(async (value) => {
     try {
@@ -46,7 +61,7 @@ const CitySearch = ({ setCurrentCity, setInfoAlert, setErrorAlert }) => {
   }, [setCurrentCity, setInfoAlert, setErrorAlert]);
 
   return (
-    <div id="city-search">
+    <div id="city-search" ref={searchContainerRef}>
       <input
         type="text"
         placeholder="Search for a city"

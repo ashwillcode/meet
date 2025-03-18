@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react'
 import CitySearch from './components/CitySearch'
 import EventList from './components/EventList'
 import NumberOfEvents from './components/NumberOfEvents'
+import InstallPrompt from './components/InstallPrompt'
 import { InfoAlert, ErrorAlert, WarningAlert } from './components/Alert'
 import { getEvents } from './api'
 import './App.css'
@@ -16,9 +17,26 @@ const App = () => {
   const [warningAlert, setWarningAlert] = useState("")
 
   const fetchInitialEvents = useCallback(async () => {
-    const fetchedEvents = await getEvents()
-    setAllEvents(fetchedEvents)
-  }, [])
+    try {
+      let fetchedEvents;
+      if (navigator.onLine) {
+        // If online, fetch from API
+        fetchedEvents = await getEvents();
+        // Store in localStorage
+        localStorage.setItem('lastEvents', JSON.stringify(fetchedEvents));
+        setWarningAlert(""); // Clear any offline warning
+      } else {
+        // If offline, get from localStorage
+        const cachedEvents = localStorage.getItem('lastEvents');
+        fetchedEvents = cachedEvents ? JSON.parse(cachedEvents) : [];
+        setWarningAlert("You are offline. The event list may not be up to date.");
+      }
+      setAllEvents(fetchedEvents);
+    } catch (error) {
+      setErrorAlert("Error loading events. Please try again later.");
+      console.error('Error fetching events:', error);
+    }
+  }, []);
 
   const filterEvents = useCallback(() => {
     let filteredEvents = currentCity === "See all cities"
@@ -30,10 +48,30 @@ const App = () => {
     setEvents(filteredEvents)
   }, [currentCity, allEvents, numberOfEvents])
 
-  // Fetch events on mount
+  // Check online status and fetch events
   useEffect(() => {
-    fetchInitialEvents()
-  }, [fetchInitialEvents])
+    const handleOnlineStatus = () => {
+      if (navigator.onLine) {
+        setWarningAlert("");
+        fetchInitialEvents();
+      } else {
+        setWarningAlert("You are offline. The event list may not be up to date.");
+      }
+    };
+
+    // Add event listeners for online/offline status
+    window.addEventListener('online', handleOnlineStatus);
+    window.addEventListener('offline', handleOnlineStatus);
+
+    // Initial fetch
+    fetchInitialEvents();
+
+    // Cleanup
+    return () => {
+      window.removeEventListener('online', handleOnlineStatus);
+      window.removeEventListener('offline', handleOnlineStatus);
+    };
+  }, [fetchInitialEvents]);
 
   // Filter events when dependencies change
   useEffect(() => {
@@ -46,6 +84,8 @@ const App = () => {
 
   return (
     <div className="App">
+      <h1 className="app-title">Meet<span>App</span></h1>
+      <InstallPrompt />
       <div className="alerts-container">
         {infoAlert && (
           <InfoAlert 

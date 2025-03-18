@@ -48,6 +48,21 @@ ul, li {
   align-items: center;
   padding: 40px 20px;
   max-width: 1200px;
+  margin-top: 40px;
+}
+
+/* App Title */
+.app-title {
+  font-size: 2.5rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 48px;
+  text-align: center;
+  letter-spacing: -0.5px;
+}
+
+.app-title span {
+  color: var(--lavender);
 }
 
 /* Search Section */
@@ -65,6 +80,7 @@ ul, li {
 input[type="text"],
 input[type="number"] {
   width: 100%;
+  min-width: 300px;
   padding: 16px 20px;
   font-size: 16px;
   border: 2px solid var(--border);
@@ -109,8 +125,9 @@ input[type="number"]:focus {
 }
 
 .suggestions > li:hover {
-  background-color: var(--lavender-light);
-  color: var(--lavender);
+  background-color: var(--lavender);
+  color: white;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 /* Number of Events Section */
@@ -125,7 +142,7 @@ input[type="number"]:focus {
 #event-list {
   width: 100%;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
   gap: 24px;
   padding: 20px;
   justify-content: center;
@@ -144,6 +161,8 @@ input[type="number"]:focus {
   flex-direction: column;
   align-items: center;
   text-align: center;
+  width: 450px;
+  margin: 0 auto;
 }
 
 .event:hover {
@@ -164,7 +183,6 @@ input[type="number"]:focus {
   text-align: center;
   color: var(--text-secondary);
   margin-bottom: 16px;
-  flex-grow: 1;
 }
 
 /* Button Styling */
@@ -221,16 +239,79 @@ input[type="number"]:focus {
 }
 
 .Alert {
+  position: relative;
+  padding: 8px;
   margin-bottom: 10px;
-  text-align: center;
+  border-radius: 4px;
 }
 
 .Alert p {
   margin: 0;
-  padding: 8px 16px;
+  padding: 8px;
   border-radius: 4px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-  transition: opacity 0.3s ease;
+  font-size: 14px;
+  line-height: 20px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.alert-icon {
+  flex-shrink: 0;
+}
+
+.alert-text {
+  flex-grow: 1;
+}
+
+.Alert button {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  background: none;
+  border: none;
+  font-size: 18px;
+  opacity: 0.7;
+  padding: 4px 8px;
+}
+
+.Alert button:hover {
+  opacity: 1;
+}
+
+.InfoAlert p {
+  background-color: #e3f2fd;
+  color: #0A4B8F;
+  border: 1px solid #90caf9;
+  font-weight: 600;
+}
+
+.InfoAlert .alert-icon {
+  color: #0A4B8F;
+}
+
+.ErrorAlert p {
+  background-color: #ffebee;
+  color: #9B0000;
+  border: 1px solid #ef9a9a;
+  font-weight: 600;
+}
+
+.ErrorAlert .alert-icon {
+  color: #9B0000;
+}
+
+.WarningAlert p {
+  background-color: #fff3e0;
+  color: #E85D00;
+  border: 1px solid #ffb74d;
+  font-weight: 600;
+}
+
+.WarningAlert .alert-icon {
+  color: #E85D00;
 }
 
 .city-search-input {
@@ -246,4 +327,42 @@ input[type="number"]:focus {
   outline: none;
   border-color: #2196F3;
   box-shadow: 0 0 0 2px rgba(33,150,243,0.1);
+}
+
+.details {
+  margin-top: 16px;
+  width: 100%;
+}
+
+.details::-webkit-scrollbar {
+  width: 6px;
+}
+
+.details::-webkit-scrollbar-track {
+  background: var(--border);
+  border-radius: 3px;
+}
+
+.details::-webkit-scrollbar-thumb {
+  background: var(--lavender);
+  border-radius: 3px;
+}
+
+.details .event-description {
+  margin-bottom: 12px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+.details .event-link {
+  display: inline-block;
+  color: var(--lavender);
+  text-decoration: none;
+  margin-top: 8px;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.details .event-link:hover {
+  color: var(--lavender-light);
 }

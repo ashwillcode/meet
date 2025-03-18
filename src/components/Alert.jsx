@@ -3,39 +3,6 @@ import { Component } from 'react';
 class Alert extends Component {
   constructor(props) {
     super(props);
-    this.color = null;
-  }
-
-  getStyle = () => {
-    return {
-      color: this.color,
-      fontSize: '14px',
-      margin: '10px 0',
-      padding: '10px',
-      borderRadius: '4px',
-      backgroundColor: this.backgroundColor,
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      position: 'relative'
-    };
-  }
-
-  getCloseButtonStyle = () => {
-    return {
-      color: this.color,
-      background: 'none',
-      border: 'none',
-      cursor: 'pointer',
-      fontSize: '18px',
-      padding: '0 5px',
-      marginLeft: '10px',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      opacity: '0.7',
-      transition: 'opacity 0.2s ease'
-    };
   }
 
   handleClose = () => {
@@ -45,45 +12,94 @@ class Alert extends Component {
     }
   }
 
+  renderIcon() {
+    switch (this.props.className) {
+      case 'WarningAlert':
+        return (
+          <svg 
+            className="alert-icon"
+            width="20" 
+            height="20" 
+            viewBox="0 0 24 24" 
+            fill="none" 
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path 
+              d="M12 5.99L19.53 19H4.47L12 5.99ZM12 2L1 21h22L12 2zm1 14h-2v2h2v-2zm0-6h-2v4h2v-4z"
+              fill="currentColor"
+            />
+          </svg>
+        );
+      case 'InfoAlert':
+        return (
+          <svg 
+            className="alert-icon"
+            width="20" 
+            height="20" 
+            viewBox="0 0 24 24" 
+            fill="none" 
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path 
+              d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"
+              fill="currentColor"
+            />
+          </svg>
+        );
+      case 'ErrorAlert':
+        return (
+          <svg 
+            className="alert-icon"
+            width="20" 
+            height="20" 
+            viewBox="0 0 24 24" 
+            fill="none" 
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path 
+              d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"
+              fill="currentColor"
+            />
+          </svg>
+        );
+      default:
+        return null;
+    }
+  }
+
   render() {
     return (
-      <div className="Alert">
-        <div style={this.getStyle()}>
-          <span>{this.props.text}</span>
-          <button 
-            onClick={this.handleClose}
-            style={this.getCloseButtonStyle()}
-            aria-label="Close alert"
-          >
-            ×
-          </button>
-        </div>
+      <div className={`Alert ${this.props.className || ''}`}>
+        <p>
+          {this.renderIcon()}
+          <span className="alert-text">{this.props.text}</span>
+        </p>
+        <button 
+          onClick={this.handleClose}
+          aria-label="Close alert"
+        >
+          ×
+        </button>
       </div>
     );
   }
 }
 
 class InfoAlert extends Alert {
-  constructor(props) {
-    super(props);
-    this.color = '#2196F3';  // Material UI Blue
-    this.backgroundColor = '#E3F2FD';  // Light blue background
+  render() {
+    return <Alert {...this.props} className="InfoAlert" />;
   }
 }
 
 class ErrorAlert extends Alert {
-  constructor(props) {
-    super(props);
-    this.color = '#F44336';  // Material UI Red
-    this.backgroundColor = '#FFEBEE';  // Light red background
+  render() {
+    return <Alert {...this.props} className="ErrorAlert" />;
   }
 }
 
 class WarningAlert extends Alert {
-  constructor(props) {
-    super(props);
-    this.color = '#FF9800';  // Material UI Orange
-    this.backgroundColor = '#FFF3E0';  // Light orange background
+  render() {
+    return <Alert {...this.props} className="WarningAlert" />;
   }
 }
 
