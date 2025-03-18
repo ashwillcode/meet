@@ -27,22 +27,24 @@ const Event = ({ event }) => {
 
   return (
     <div className="event" data-testid="event-item">
-      <h2 className="event-title" data-testid="event-title">{summary}</h2>
-      <p className="event-datetime" data-testid="event-datetime">
-        {formatDate(startDateTime, timeZone)}
-      </p>
-      <p className="event-location" data-testid="event-location">{location}</p>
-      
-      <button 
-        className="details-btn"
-        data-testid="details-btn"
-        onClick={() => setShowDetails(!showDetails)}
-        aria-expanded={showDetails}
-        aria-controls="event-details"
-      >
-        {showDetails ? 'Hide Details' : 'Show Details'}
-      </button>
-      
+      <div className="event-summary">
+        <h2 className="event-title" data-testid="event-title">{summary}</h2>
+        <p className="event-datetime" data-testid="event-datetime">
+          {formatDate(startDateTime, timeZone)}
+        </p>
+        <p className="event-location" data-testid="event-location">{location}</p>
+        
+        <button 
+          className="details-btn"
+          data-testid="details-btn"
+          onClick={() => setShowDetails(!showDetails)}
+          aria-expanded={showDetails}
+          aria-controls="event-details"
+        >
+          {showDetails ? 'Hide Details' : 'Show Details'}
+        </button>
+      </div>
+
       {showDetails && (
         <div 
           id="event-details"
